@@ -19,6 +19,8 @@ const bot = new TelegramBot(process.env.BOT_TOKEN, {
 });
 
 app.post("/order", async (req, res) => {
+    console.log("TAXGO BUYURTMA KELDI:", req.body);
+
     const { from, to, phone, type } = req.body;
 
     if (!from || !to || !phone || !type) {
@@ -38,20 +40,27 @@ app.post("/order", async (req, res) => {
 `;
 
     try {
-    await bot.sendMessage(process.env.CHAT_ID, message);
-        res.json({
+        await bot.sendMessage(process.env.CHAT_ID, message);
+
+        console.log("TELEGRAMGA BUYURTMA YUBORILDI!");
+
+        return res.json({
             success: true,
             message: "Buyurtma yuborildi!"
         });
-    } catch (error) {
-        console.error("Telegram xatosi:", error.message);
 
-        res.status(500).json({
+    } catch (error) {
+        console.error("TELEGRAM XATOSI:", error);
+
+        return res.status(500).json({
             success: false,
             message: "Telegramga yuborishda xatolik!"
         });
     }
 });
+
 app.listen(PORT, "0.0.0.0", () => {
     console.log(`TAXGO server ishga tushdi: http://localhost:${PORT}`);
 });
+
+
